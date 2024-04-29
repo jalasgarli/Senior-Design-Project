@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AllocateRoomInGivenTimeAndDay {
     // This function returns list of rooms that can be allocated
-    public static List<Integer> findClosestSum(int[] roomSizes, int totalStudents) {
+    public static List<Integer> findClosestSum(int[] roomSizes, int totalStudents, double percent) {
         List<Integer> result = new ArrayList<>();
         List<Integer> size_of_rooms = new ArrayList<>();
         for(int i=0; i<roomSizes.length; i++) {
@@ -23,15 +23,15 @@ public class AllocateRoomInGivenTimeAndDay {
             Collections.sort(size_of_rooms, Collections.reverseOrder());
             int room_size = size_of_rooms.get(0);
             for(int j=0; j<size_of_rooms.size()-1; j++) {
-                int room_size1 = (int) Math.ceil(size_of_rooms.get(j) * 0.6);
-                int room_size2 = (int) Math.ceil(size_of_rooms.get(j+1) * 0.6);
+                int room_size1 = (int) Math.ceil(size_of_rooms.get(j) * percent);
+                int room_size2 = (int) Math.ceil(size_of_rooms.get(j+1) * percent);
                 if(room_size1 >= (percentage-sum) && (percentage-sum) > room_size2) {
                     room_size = size_of_rooms.get(j);
                     size_of_rooms.remove(Integer.valueOf(size_of_rooms.get(j)));
                     break;
                 }
             }
-            sum += (int) Math.ceil(room_size * 0.6);
+            sum += (int) Math.ceil(room_size * percent);
             result.add(room_size);
             size_of_rooms.remove(Integer.valueOf(room_size));
         }
@@ -121,7 +121,7 @@ public class AllocateRoomInGivenTimeAndDay {
     }
 
 
-    public static List<String> result(MultipartFile roomFile, MultipartFile studentFile) {
+    public static List<String> result(MultipartFile roomFile, MultipartFile studentFile, double percent) {
         GraphColoring graphColoring = new GraphColoring();
         List<String> resultList = new ArrayList<>();
         HashMap<Integer, List<Student>> csvFile = graphColoring.readingFromFile(studentFile);
@@ -152,7 +152,7 @@ public class AllocateRoomInGivenTimeAndDay {
                     array[j] = room_sizes.get(j);
                 }
                 // This part will give us rooms' sizes for given number.
-                List<Integer> rooms = findClosestSum(array, number_of_students);
+                List<Integer> rooms = findClosestSum(array, number_of_students, percent);
 
                 List<String> room = roomNames(name_size, rooms);
                 room_sizes = roomSizesToBeDeleted(rooms, room_sizes);
